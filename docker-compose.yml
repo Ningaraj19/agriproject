@@ -1,0 +1,57 @@
+# AgriAI — Docker Compose (Development)
+# Usage: docker-compose up -d
+
+version: "3.9"
+
+services:
+  # ── FastAPI Application ────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agri-app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://agriuser:agripass@postgres:5432/agridb
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL:-llama-3.3-70b-versatile}
+      - CHROMA_PERSIST_DIR=/app/data/chromadb
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - agri-network
+
+  # ── PostgreSQL Database ────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: agri-postgres
+    environment:
+      POSTGRES_USER: agriuser
+      POSTGRES_PASSWORD: agripass
+      POSTGRES_DB: agridb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agriuser -d agridb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - agri-network
+
+volumes:
+  postgres_data:
+
+networks:
+  agri-network:
+    driver: bridge

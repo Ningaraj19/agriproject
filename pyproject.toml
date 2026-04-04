@@ -1,0 +1,23 @@
+[project]
+name = "agri-ai"
+version = "1.0.0"
+description = "Production-ready AI platform for agriculture: crop advice, disease detection, weather insights, market prices, and government schemes."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "AgriAI Team"},
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
