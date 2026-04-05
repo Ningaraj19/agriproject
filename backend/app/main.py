@@ -37,14 +37,6 @@ async def lifespan(app: FastAPI):
         debug=settings.debug,
     )
 
-    # Initialize database tables (dev mode)
-    try:
-        from app.db.session import init_db
-        await init_db()
-        logger.info("database_initialized")
-    except Exception as e:
-        logger.warning("database_init_skipped", error=str(e))
-
     logger.info("application_ready", app=settings.app_name)
 
     yield  # Application runs here

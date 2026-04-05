@@ -27,9 +27,13 @@ node_modules/
 
 # Data & Models
 data/chromadb/
+data/chroma_db/
 data/disease_model/*.pth
 *.pt
 *.bin
+backend/data/chroma_db/
+backend/data/audio_output/
+backend/.env
 
 # OS
 .DS_Store

@@ -1,14 +1,19 @@
 """Application configuration using pydantic-settings."""
 
 from functools import lru_cache
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Always resolve .env relative to this config.py file's location (backend/)
+_BASE_DIR = Path(__file__).resolve().parent.parent  # backend/app/config.py → backend/
+_ENV_FILE = _BASE_DIR / ".env"
 
 
 class Settings(BaseSettings):
     """Central configuration loaded from environment variables / .env file."""
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(_ENV_FILE),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
@@ -20,9 +25,6 @@ class Settings(BaseSettings):
     debug: bool = False
     host: str = "0.0.0.0"
     port: int = 8000
-
-    # ── Database ─────────────────────────────────────────────────
-    database_url: str = "postgresql+asyncpg://agriuser:agripass@localhost:5432/agridb"
 
     # ── Groq LLM ─────────────────────────────────────────────────
     groq_api_key: str = ""
